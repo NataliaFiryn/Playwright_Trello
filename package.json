@@ -1,0 +1,21 @@
+{
+  "name": "playwright_trello",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NataliaFiryn/Playwright_Trello.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NataliaFiryn/Playwright_Trello/issues"
+  },
+  "homepage": "https://github.com/NataliaFiryn/Playwright_Trello#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.31.2"
+  }
+}
