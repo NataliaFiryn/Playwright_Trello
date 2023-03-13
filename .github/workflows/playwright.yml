@@ -18,7 +18,10 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test
+      env:
+        TRELLO_KEY: ${{ secrets.KEY }}
+        TRELLO_TOKEN: ${{ secrets.TOKEN }}
+      run: KEY=$TRELLO_KEY TOKEN=$TRELLO_TOKEN npx playwright test
     - uses: actions/upload-artifact@v3
       if: always()
       with:
