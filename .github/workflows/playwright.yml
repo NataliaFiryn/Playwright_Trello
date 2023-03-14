@@ -21,7 +21,9 @@ jobs:
       env:
         TRELLO_KEY: ${{ secrets.KEY }}
         TRELLO_TOKEN: ${{ secrets.TOKEN }}
-      run: KEY=$TRELLO_KEY TOKEN=$TRELLO_TOKEN npx playwright test
+        TRELLO_LOGIN: ${{ secrets.LOGIN }}
+        TRELLO_PASSWORD: ${{ secrets.PASSWORD }}
+      run: KEY=$TRELLO_KEY TOKEN=$TRELLO_TOKEN LOGIN=$TRELLO_LOGIN PASSWORD=$TRELLO_PASSWORD npx playwright test
     - uses: actions/upload-artifact@v3
       if: always()
       with:
