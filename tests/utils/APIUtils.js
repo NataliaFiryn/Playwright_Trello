@@ -5,7 +5,7 @@ class APIUtils {
         this.apiContext = apiContext
         this.allBoards = {}
         this.board = {}
-        this.list = {}
+        this.listId
         this.existingListId
         this.cardId
     }
@@ -16,7 +16,7 @@ class APIUtils {
                 token: process.env.TOKEN,
             }
         })
-        expect(await allBoardsResponse.status()).toBe(200) // ?
+        expect(await allBoardsResponse.status()).toBe(200)
         const allBoardsResponseJson = JSON.parse(await allBoardsResponse.text())
         const result = allBoardsResponseJson.map(board => board.id)
         console.log(result)
@@ -34,11 +34,8 @@ class APIUtils {
         const createBoardResponseJson = JSON.parse(await createBoardResponse.text())
         expect(await createBoardResponseJson.closed).toEqual(false)
         expect(await createBoardResponseJson.prefs.permissionLevel).toEqual('private')
-        //console.log(createBoardResponseJson)
         this.board.id = createBoardResponseJson.id
-        this.board.name = createBoardResponseJson.name
         this.board.url = createBoardResponseJson.url
-        //console.log(this.board)
         return this.board
     }
     async createList(listName) {
@@ -55,11 +52,8 @@ class APIUtils {
         expect(await createListResponseJson.closed).toEqual(false)
         expect(await createListResponseJson.idBoard).toEqual(this.board.id)
         expect(await createListResponseJson.name).toEqual(listName)
-        //console.log(createListResponseJson)
-        this.list.id = createListResponseJson.id
-        this.list.name = createListResponseJson.name
-        //console.log(this.list)
-        return this.list
+        this.listId = createListResponseJson.id
+        return this.listId
     }
     async getExistingListId(listNumber) {
         const getExistingListResponse = await this.apiContext.get('https://api.trello.com/1/boards/' + this.board.id + '/lists', {
@@ -70,16 +64,14 @@ class APIUtils {
         })
         expect(await getExistingListResponse.status()).toBe(200)
         const getExistingListResponseJson = JSON.parse(await getExistingListResponse.text())
-        //console.log(getExistingListResponseJson)
         this.existingListId = getExistingListResponseJson[listNumber].id
-        //console.log(this.existingListId)
         return this.existingListId
     }
     async createCard(cardName) {
         const createCardResponse = await this.apiContext.post('https://api.trello.com/1/cards', {
             params: {
                 name: cardName,
-                idList: this.list.id,
+                idList: this.listId,
                 key: process.env.KEY,
                 token: process.env.TOKEN,
             }
@@ -89,10 +81,8 @@ class APIUtils {
         expect(await createCardResponseJson.closed).toEqual(false)
         expect(await createCardResponseJson.name).toEqual(cardName)
         expect(await createCardResponseJson.idBoard).toEqual(this.board.id)
-        expect(await createCardResponseJson.idList).toEqual(this.list.id)
-        //console.log(createCardResponseJson)
+        expect(await createCardResponseJson.idList).toEqual(this.listId)
         this.cardId = createCardResponseJson.id
-        //console.log(this.cardId)
         return this.cardId
     }
     async moveCardFromCreatedListToExistingList() {
@@ -108,7 +98,6 @@ class APIUtils {
         expect(await moveCardResponseJson.idBoard).toEqual(this.board.id)
         expect(await moveCardResponseJson.idList).toEqual(this.existingListId)
         expect(await moveCardResponseJson.id).toEqual(this.cardId)
-        //console.log(moveCardResponseJson)
     }
     async deleteCard() {
         const deleteCardResponse = await this.apiContext.delete('https://api.trello.com/1/cards/' + this.cardId, {

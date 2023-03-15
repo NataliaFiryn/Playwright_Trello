@@ -27,11 +27,9 @@ async addBoardByAPICheckOnUI(boardName){
     const apiContext = await request.newContext()
     const apiRequest = new APIUtils(apiContext)
     var board = await apiRequest.createBoard(boardName)
-    //console.log(board)
     let boardLink = (board.url).split('com')[1]
-    //console.log(boardLink)
     await this.page.locator('[href="'+boardLink+'"]').click()
-    expect (await this.boardTitle).toHaveText(board.name)
+    expect (await this.boardTitle).toHaveText(boardName)
     expect (await this.lists).toHaveCount(3)
 }
 async addListByAPICheckOnUI(boardName, listName){
@@ -43,7 +41,7 @@ async addListByAPICheckOnUI(boardName, listName){
     let boardLink = (board.url).split('com')[1]
     await this.page.locator('[href="'+boardLink+'"]').click()
     expect (await this.lists).toHaveCount(4)
-    expect (await this.listsHeaders.nth(0)).toHaveText(list.name)
+    expect (await this.listsHeaders.nth(0)).toHaveText(listName)
 }
 async addCartByAPICheckOnUI(boardName, listName, cardName){
     const apiContext = await request.newContext()
@@ -55,7 +53,6 @@ async addCartByAPICheckOnUI(boardName, listName, cardName){
     await this.page.locator('[href="'+boardLink+'"]').click()
     expect (await this.card).toHaveJSProperty('innerText', cardName)
     expect (( this.lists.nth(0)).filter({has: this.card})).toHaveCount(1)
-    //expect (await this.lists.nth(0)).toHaveJSProperty('outerText', cardName+\n+'Add a card')
 }
 async moveCartByAPICheckOnUI(boardName, listName, cardName,listNumber){
     const apiContext = await request.newContext()
@@ -71,7 +68,6 @@ async moveCartByAPICheckOnUI(boardName, listName, cardName,listNumber){
     await apiRequest.moveCardFromCreatedListToExistingList()
     expect (( this.lists.nth(0)).filter({has: this.card})).toHaveCount(0)
     expect (( this.lists.nth(listNumber)).filter({has: this.card})).toHaveCount(1)
-    //expect (await this.lists.nth(0)).toHaveJSProperty('outerText', cardName+\n+'Add a card')
 }
 async deleteCartByAPICheckOnUI(boardName, listName, cardName){
     const apiContext = await request.newContext()
@@ -81,7 +77,6 @@ async deleteCartByAPICheckOnUI(boardName, listName, cardName){
     await apiRequest.createCard(cardName)
     let boardLink = (board.url).split('com')[1]
     await this.page.locator('[href="'+boardLink+'"]').click()
-    //await this.card.waitFor()
     expect (await this.card).toHaveJSProperty('innerText', cardName)
     await apiRequest.deleteCard()
     expect(await this.card).toHaveCount(0)
@@ -95,11 +90,9 @@ async deleteBoardByAPICheckOnUI(boardName){
     await apiRequest.deleteBoard()
     expect (await this.page.locator('[href="'+boardLink+'"]')).toHaveCount(0)
 }
-async deleteAllBoardByAPICheckOnUI(boardName){
+async deleteAllBoardByAPICheckOnUI(){
     const apiContext = await request.newContext()
     const apiRequest = new APIUtils(apiContext)
-    await apiRequest.createBoard(boardName)
-    await apiRequest.createBoard(boardName)
     await apiRequest.deleteAllBoards()
     expect (await this.boards).toHaveCount(0)
 }

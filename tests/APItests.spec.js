@@ -7,13 +7,13 @@ test.describe('Only API Tests', () => {
     test('All API request', async () => {
         const apiContext = await request.newContext()
         const apiRequest = new APIUtils(apiContext)
-        // await apiRequest.createBoard('First Board')
-        // await apiRequest.createList('TODO')
-        // await apiRequest.createCard('Task')
-        // await apiRequest.getExistingListId(1)
-        // await apiRequest.moveCardFromCreatedListToExistingList()
-        // await apiRequest.deleteCard()
-        // await apiRequest.deleteBoard()
+        await apiRequest.createBoard('First Board')
+        await apiRequest.createList('TODO')
+        await apiRequest.createCard('Task')
+        await apiRequest.getExistingListId(1)
+        await apiRequest.moveCardFromCreatedListToExistingList()
+        await apiRequest.deleteCard()
+        await apiRequest.deleteBoard()
         await apiRequest.deleteAllBoards()
     });
 });
@@ -34,7 +34,7 @@ test.describe('API tests with verification on UI', () => {
         const workspace = new WorkspacePage(page)
         await workspace.addCartByAPICheckOnUI('Third Board', 'New List', 'New Card')
     });
-    test.only('Move Card', async ({ page }) => {
+    test('Move Card', async ({ page }) => {
         const workspace = new WorkspacePage(page)
         await workspace.moveCartByAPICheckOnUI('Fourth Board', 'New List', 'New Card', 2)
     });
@@ -48,6 +48,6 @@ test.describe('API tests with verification on UI', () => {
     });
     test('Delete All Boards', async ({ page }) => {
         const workspace = new WorkspacePage(page)
-        await workspace.deleteAllBoardByAPICheckOnUI('Seventh Board')
+        await workspace.deleteAllBoardByAPICheckOnUI()
     });
 });
