@@ -4,24 +4,23 @@ class APIUtils {
     constructor(apiContext) {
         this.apiContext = apiContext
         this.allBoards = {}
-        this.board ={}
+        this.board = {}
         this.list = {}
         this.existingListId
         this.cardId
     }
-    async getFirstBoardID() {
+    async getBoardsIds() {
         const allBoardsResponse = await this.apiContext.get('https://api.trello.com/1/members/me/boards', {
             params: {
                 key: process.env.KEY,
                 token: process.env.TOKEN,
             }
         })
-        expect(await allBoardsResponse.status()).toBe(200)
+        expect(await allBoardsResponse.status()).toBe(200) // ?
         const allBoardsResponseJson = JSON.parse(await allBoardsResponse.text())
-        this.allBoards.count = allBoardsResponseJson.length
-        this.allBoards.firstBoardId = allBoardsResponseJson[0].id
-        console.log(this.allBoards)
-        return this.allBoards
+        const result = allBoardsResponseJson.map(board => board.id)
+        console.log(result)
+        return result
     }
     async createBoard(boardName) {
         const createBoardResponse = await this.apiContext.post('https://api.trello.com/1/boards/', {
@@ -53,9 +52,9 @@ class APIUtils {
         })
         expect(await createListResponse.status()).toBe(200)
         const createListResponseJson = JSON.parse(await createListResponse.text())
-        expect( await createListResponseJson.closed).toEqual(false)
-        expect( await createListResponseJson.idBoard).toEqual(this.board.id)
-        expect( await createListResponseJson.name).toEqual(listName)
+        expect(await createListResponseJson.closed).toEqual(false)
+        expect(await createListResponseJson.idBoard).toEqual(this.board.id)
+        expect(await createListResponseJson.name).toEqual(listName)
         //console.log(createListResponseJson)
         this.list.id = createListResponseJson.id
         this.list.name = createListResponseJson.name
@@ -87,10 +86,10 @@ class APIUtils {
         })
         expect(await createCardResponse.status()).toBe(200)
         const createCardResponseJson = JSON.parse(await createCardResponse.text())
-        expect (await createCardResponseJson.closed).toEqual(false)
-        expect (await createCardResponseJson.name).toEqual(cardName)
-        expect (await createCardResponseJson.idBoard).toEqual(this.board.id)
-        expect (await createCardResponseJson.idList).toEqual(this.list.id)
+        expect(await createCardResponseJson.closed).toEqual(false)
+        expect(await createCardResponseJson.name).toEqual(cardName)
+        expect(await createCardResponseJson.idBoard).toEqual(this.board.id)
+        expect(await createCardResponseJson.idList).toEqual(this.list.id)
         //console.log(createCardResponseJson)
         this.cardId = createCardResponseJson.id
         //console.log(this.cardId)
@@ -106,9 +105,9 @@ class APIUtils {
         })
         expect(await moveCardResponse.status()).toBe(200)
         const moveCardResponseJson = JSON.parse(await moveCardResponse.text())
-        expect (await moveCardResponseJson.idBoard).toEqual(this.board.id)
-        expect (await moveCardResponseJson.idList).toEqual(this.existingListId)
-        expect (await moveCardResponseJson.id).toEqual(this.cardId)
+        expect(await moveCardResponseJson.idBoard).toEqual(this.board.id)
+        expect(await moveCardResponseJson.idList).toEqual(this.existingListId)
+        expect(await moveCardResponseJson.id).toEqual(this.cardId)
         //console.log(moveCardResponseJson)
     }
     async deleteCard() {
@@ -120,28 +119,25 @@ class APIUtils {
         })
         expect(await deleteCardResponse.status()).toBe(200)
     }
-    async deleteBoard(){
+    async deleteBoard() {
         const deleteBoardResponse = await this.apiContext.delete('https://api.trello.com/1/boards/' + this.board.id, {
             params: {
                 key: process.env.KEY,
                 token: process.env.TOKEN,
             }
         })
-        expect(await deleteBoardResponse.status()).toBe(200) 
+        expect(await deleteBoardResponse.status()).toBe(200)
     }
     async deleteAllBoards() {
-        await this.getFirstBoardID()
-        for (let i = 0; i <= this.allBoards.count; ++i) {
-            await this.getFirstBoardID()
-            if (this.allBoards.count > 0) {
-                const deleteBoardResponse = await this.apiContext.delete('https://api.trello.com/1/boards/' + this.allBoards.firstBoardId, {
-                    params: {
-                        key: process.env.KEY,
-                        token: process.env.TOKEN,
-                    }
-                })
-                expect(await deleteBoardResponse.status()).toBe(200)
-            }
+        const allBoardsIds = await this.getBoardsIds()
+        for (let i = 0; i < allBoardsIds.length; i++) {
+            const deleteBoardResponse = await this.apiContext.delete('https://api.trello.com/1/boards/' + allBoardsIds[i], {
+                params: {
+                    key: process.env.KEY,
+                    token: process.env.TOKEN,
+                }
+            })
+            expect(await deleteBoardResponse.status()).toBe(200)
         }
     }
 }
