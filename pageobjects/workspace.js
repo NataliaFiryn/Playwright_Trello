@@ -88,7 +88,7 @@ async deleteBoardByAPICheckOnUI(boardName){
     let boardLink = (board.url).split('com')[1]
     await this.page.locator('[href="'+boardLink+'"]').click()
     await apiRequest.deleteBoard()
-    expect (await this.page.locator('[href="'+boardLink+'"]')).toHaveCount(0)
+    expect (await this.page.locator('#content h1')).toContainText('Board not found.')
 }
 async deleteAllBoardByAPICheckOnUI(){
     const apiContext = await request.newContext()
