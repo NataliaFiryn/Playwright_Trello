@@ -13,6 +13,8 @@ class WorkspacePage {
         this.lists = page.locator('#board .js-list-content')
         this.listsHeaders = page.locator('.list-header-name')
         this.card = page.locator('.list-card')
+        this.workspaceSwicher = page.locator('[data-testid="workspace-switcher"]')
+        this.yourWorkspace = page.locator('[data-testid="workspace-switcher-popover-tile"]')
         
     }
     async login(){
@@ -79,6 +81,7 @@ async deleteCartByAPICheckOnUI(boardName, listName, cardName){
     await this.page.locator('[href="'+boardLink+'"]').click()
     expect (await this.card).toHaveJSProperty('innerText', cardName)
     await apiRequest.deleteCard()
+    await this.page.reload()
     expect(await this.card).toHaveCount(0)
 }
 async deleteBoardByAPICheckOnUI(boardName){
@@ -88,8 +91,9 @@ async deleteBoardByAPICheckOnUI(boardName){
     let boardLink = (board.url).split('com')[1]
     await this.page.locator('[href="'+boardLink+'"]').click()
     await apiRequest.deleteBoard()
-    await this.page.reload()
-    expect (await this.page.locator('#content h1')).toContainText('Board not found.')
+    await this.workspaceSwicher.click()
+    await this.yourWorkspace.click()
+    expect (await this.page.locator('[href="'+boardLink+'"]')).toHaveCount(0)
 }
 async deleteAllBoardByAPICheckOnUI(){
     const apiContext = await request.newContext()
