@@ -1,9 +1,11 @@
 const { expect, request } = require('@playwright/test');
 const { APIUtils } = require('../tests/utils/APIUtils')
 
-class WorkspacePage {
+class UIValidationsforAPI {
     constructor(page) {
         this.page = page;
+        this.LOGIN = process.env.LOGIN
+        this.PASSWORD = process.env.PASSWORD
         this.loginEmail = page.locator('#user')
         this.continueButton = page.locator('#login')
         this.loginPassword = page.locator('#password')
@@ -19,10 +21,10 @@ class WorkspacePage {
     }
     async login(){
     await this.page.goto('https://trello.com/login')
-    await this.loginEmail.type(process.env.LOGIN)
+    await this.loginEmail.type(this.LOGIN)
     await this.continueButton.click()
     await this.loginPassword.waitFor()
-    await this.loginPassword.type(process.env.PASSWORD)
+    await this.loginPassword.type(this.PASSWORD)
     await this.loginButton.click()
 }
 async addBoardByAPICheckOnUI(boardName){
@@ -103,4 +105,4 @@ async deleteAllBoardByAPICheckOnUI(){
     expect (await this.boards).toHaveCount(0)
 }
 }
-module.exports = { WorkspacePage };
+module.exports = { UIValidationsforAPI };

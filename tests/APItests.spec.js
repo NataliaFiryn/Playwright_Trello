@@ -1,6 +1,6 @@
 const { test, expect, request } = require('@playwright/test')
 const { APIUtils } = require('../tests/utils/APIUtils')
-const { WorkspacePage } = require('../pageobjects/workspace')
+const { UIValidationsforAPI } = require('../pageobjects/UIValidationsforAPI')
 
 test.describe('Only API Tests', () => {
 
@@ -19,35 +19,35 @@ test.describe('Only API Tests', () => {
 });
 test.describe('API tests with verification on UI', () => {
     test.beforeEach(async ({ page }) => {
-        const workspace = new WorkspacePage(page)
-        await workspace.login()
+        const uiValidation = new UIValidationsforAPI(page)
+        await uiValidation.login()
     });
     test('Create Board', async ({ page }) => {
-        const workspace = new WorkspacePage(page)
-        await workspace.addBoardByAPICheckOnUI('First Board')
+        const uiValidation = new UIValidationsforAPI(page)
+        await uiValidation.addBoardByAPICheckOnUI('First Board')
     });
     test('Create List', async ({ page }) => {
-        const workspace = new WorkspacePage(page)
-        await workspace.addListByAPICheckOnUI('Second Board', 'New List')
+        const uiValidation = new UIValidationsforAPI(page)
+        await uiValidation.addListByAPICheckOnUI('Second Board', 'New List')
     });
     test('Create Card', async ({ page }) => {
-        const workspace = new WorkspacePage(page)
-        await workspace.addCartByAPICheckOnUI('Third Board', 'New List', 'New Card')
+        const uiValidation = new UIValidationsforAPI(page)
+        await uiValidation.addCartByAPICheckOnUI('Third Board', 'New List', 'New Card')
     });
     test('Move Card', async ({ page }) => {
-        const workspace = new WorkspacePage(page)
-        await workspace.moveCartByAPICheckOnUI('Fourth Board', 'New List', 'New Card', 2)
+        const uiValidation = new UIValidationsforAPI(page)
+        await uiValidation.moveCartByAPICheckOnUI('Fourth Board', 'New List', 'New Card', 2)
     });
     test('Delete Card', async ({ page }) => {
-        const workspace = new WorkspacePage(page)
-        await workspace.deleteCartByAPICheckOnUI('Fifth Board', 'New List', 'New Card')
+        const uiValidation = new UIValidationsforAPI(page)
+        await uiValidation.deleteCartByAPICheckOnUI('Fifth Board', 'New List', 'New Card')
     });
     test('Delete Board', async ({ page }) => {
-        const workspace = new WorkspacePage(page)
-        await workspace.deleteBoardByAPICheckOnUI('Sixth Board')
+        const uiValidation = new UIValidationsforAPI(page)
+        await uiValidation.deleteBoardByAPICheckOnUI('Sixth Board')
     });
     test('Delete All Boards', async ({ page }) => {
-        const workspace = new WorkspacePage(page)
-        await workspace.deleteAllBoardByAPICheckOnUI()
+        const uiValidation = new UIValidationsforAPI(page)
+        await uiValidation.deleteAllBoardByAPICheckOnUI()
     });
 });

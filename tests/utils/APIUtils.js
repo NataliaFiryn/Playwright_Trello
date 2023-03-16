@@ -3,35 +3,36 @@ require('dotenv').config()
 class APIUtils {
     constructor(apiContext) {
         this.apiContext = apiContext
+        this.KEY = process.env.KEY
+        this.TOKEN = process.env.TOKEN
         this.allBoards = {}
         this.board = {}
         this.listId
         this.existingListId
         this.cardId
     }
-    async getBoardsIds() {
+    async getAllBoardsIds() {
         const allBoardsResponse = await this.apiContext.get('https://api.trello.com/1/members/me/boards', {
             params: {
-                key: process.env.KEY,
-                token: process.env.TOKEN,
+                key: this.KEY,
+                token: this.TOKEN,
             }
         })
         expect(await allBoardsResponse.status()).toBe(200)
-        const allBoardsResponseJson = JSON.parse(await allBoardsResponse.text())
+        const allBoardsResponseJson = await allBoardsResponse.json()
         const result = allBoardsResponseJson.map(board => board.id)
-        console.log(result)
         return result
     }
     async createBoard(boardName) {
         const createBoardResponse = await this.apiContext.post('https://api.trello.com/1/boards/', {
             params: {
                 name: boardName,
-                key: process.env.KEY,
-                token: process.env.TOKEN,
+                key: this.KEY,
+                token: this.TOKEN,
             }
         })
         expect(await createBoardResponse.status()).toBe(200)
-        const createBoardResponseJson = JSON.parse(await createBoardResponse.text())
+        const createBoardResponseJson = await createBoardResponse.json()
         expect(await createBoardResponseJson.closed).toEqual(false)
         expect(await createBoardResponseJson.prefs.permissionLevel).toEqual('private')
         this.board.id = createBoardResponseJson.id
@@ -43,12 +44,12 @@ class APIUtils {
             params: {
                 name: listName,
                 idBoard: this.board.id,
-                key: process.env.KEY,
-                token: process.env.TOKEN,
+                key: this.KEY,
+                token: this.TOKEN,
             }
         })
         expect(await createListResponse.status()).toBe(200)
-        const createListResponseJson = JSON.parse(await createListResponse.text())
+        const createListResponseJson = await createListResponse.json()
         expect(await createListResponseJson.closed).toEqual(false)
         expect(await createListResponseJson.idBoard).toEqual(this.board.id)
         expect(await createListResponseJson.name).toEqual(listName)
@@ -58,12 +59,12 @@ class APIUtils {
     async getExistingListId(listNumber) {
         const getExistingListResponse = await this.apiContext.get('https://api.trello.com/1/boards/' + this.board.id + '/lists', {
             params: {
-                key: process.env.KEY,
-                token: process.env.TOKEN,
+                key: this.KEY,
+                token: this.TOKEN,
             }
         })
         expect(await getExistingListResponse.status()).toBe(200)
-        const getExistingListResponseJson = JSON.parse(await getExistingListResponse.text())
+        const getExistingListResponseJson = await getExistingListResponse.json()
         this.existingListId = getExistingListResponseJson[listNumber].id
         return this.existingListId
     }
@@ -72,12 +73,12 @@ class APIUtils {
             params: {
                 name: cardName,
                 idList: this.listId,
-                key: process.env.KEY,
-                token: process.env.TOKEN,
+                key: this.KEY,
+                token: this.TOKEN,
             }
         })
         expect(await createCardResponse.status()).toBe(200)
-        const createCardResponseJson = JSON.parse(await createCardResponse.text())
+        const createCardResponseJson = await createCardResponse.json()
         expect(await createCardResponseJson.closed).toEqual(false)
         expect(await createCardResponseJson.name).toEqual(cardName)
         expect(await createCardResponseJson.idBoard).toEqual(this.board.id)
@@ -89,12 +90,12 @@ class APIUtils {
         const moveCardResponse = await this.apiContext.put('https://api.trello.com/1/cards/' + this.cardId, {
             params: {
                 idList: this.existingListId,
-                key: process.env.KEY,
-                token: process.env.TOKEN,
+                key: this.KEY,
+                token: this.TOKEN,
             }
         })
         expect(await moveCardResponse.status()).toBe(200)
-        const moveCardResponseJson = JSON.parse(await moveCardResponse.text())
+        const moveCardResponseJson = await moveCardResponse.json()
         expect(await moveCardResponseJson.idBoard).toEqual(this.board.id)
         expect(await moveCardResponseJson.idList).toEqual(this.existingListId)
         expect(await moveCardResponseJson.id).toEqual(this.cardId)
@@ -102,8 +103,8 @@ class APIUtils {
     async deleteCard() {
         const deleteCardResponse = await this.apiContext.delete('https://api.trello.com/1/cards/' + this.cardId, {
             params: {
-                key: process.env.KEY,
-                token: process.env.TOKEN,
+                key: this.KEY,
+                token: this.TOKEN,
             }
         })
         expect(await deleteCardResponse.status()).toBe(200)
@@ -111,19 +112,19 @@ class APIUtils {
     async deleteBoard() {
         const deleteBoardResponse = await this.apiContext.delete('https://api.trello.com/1/boards/' + this.board.id, {
             params: {
-                key: process.env.KEY,
-                token: process.env.TOKEN,
+                key: this.KEY,
+                token: this.TOKEN,
             }
         })
         expect(await deleteBoardResponse.status()).toBe(200)
     }
     async deleteAllBoards() {
-        const allBoardsIds = await this.getBoardsIds()
+        const allBoardsIds = await this.getAllBoardsIds()
         for (let i = 0; i < allBoardsIds.length; i++) {
             const deleteBoardResponse = await this.apiContext.delete('https://api.trello.com/1/boards/' + allBoardsIds[i], {
                 params: {
-                    key: process.env.KEY,
-                    token: process.env.TOKEN,
+                    key: this.KEY,
+                    token: this.TOKEN,
                 }
             })
             expect(await deleteBoardResponse.status()).toBe(200)
