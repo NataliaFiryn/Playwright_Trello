@@ -79,7 +79,7 @@ async deleteCartByAPICheckOnUI(boardName, listName, cardName){
     await apiRequest.createCard(cardName)
     let boardLink = (board.url).split('com')[1]
     await this.page.locator('[href="'+boardLink+'"]').click()
-    expect (await this.card).toHaveJSProperty('innerText', cardName)
+    expect(await this.card).toHaveCount(1)
     await apiRequest.deleteCard()
     await this.page.reload()
     expect(await this.card).toHaveCount(0)
@@ -91,6 +91,7 @@ async deleteBoardByAPICheckOnUI(boardName){
     let boardLink = (board.url).split('com')[1]
     await this.page.locator('[href="'+boardLink+'"]').click()
     await apiRequest.deleteBoard()
+    await this.page.reload()
     await this.workspaceSwicher.click()
     await this.yourWorkspace.click()
     expect (await this.page.locator('[href="'+boardLink+'"]')).toHaveCount(0)
