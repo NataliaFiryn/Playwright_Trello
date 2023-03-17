@@ -11,7 +11,7 @@ test.describe('UI Tests', () => {
     test('Create board', async ({ page }) => {
         const pageObjectsManager = new PageObjectsManager(page)
         const workspacePage = pageObjectsManager.getWorkspacePage()
-        await workspacePage.createBoard('Board Name', '🍑', 'Workspace')
+        await workspacePage.createBoard('Peach Board', '🍑', 'Workspace')
     })
     test('Create list', async ({ page, request }) => {
         const pageObjectsManager = new PageObjectsManager(page)
@@ -22,7 +22,6 @@ test.describe('UI Tests', () => {
         const board = await apiRequest.createBoard('First Board')
         await workspacePage.goToBoard(board.url)
         await boardPage.createList('New List')
-
     })
     test('Create cart', async ({ page, request }) => {
         const pageObjectsManager = new PageObjectsManager(page)
@@ -30,10 +29,22 @@ test.describe('UI Tests', () => {
         const workspacePage = pageObjectsManager.getWorkspacePage()
         const boardPage = pageObjectsManager.getBoardPage()
 
-        const board = await apiRequest.createBoard('First Board')
+        const board = await apiRequest.createBoard('Second Board')
         await apiRequest.createList('New List')
         await workspacePage.goToBoard(board.url)
         await boardPage.createCart('New Cart')
+    })
+    test('Move cart', async ({page, request}) => {
+        const pageObjectsManager = new PageObjectsManager(page)
+        const apiRequest = new APIUtils(request)
+        const workspacePage = pageObjectsManager.getWorkspacePage()
+        const boardPage = pageObjectsManager.getBoardPage()
+
+        const board = await apiRequest.createBoard('Third Board')
+        await apiRequest.createList('New List')
+        await apiRequest.createCard('New Card')
+        await workspacePage.goToBoard(board.url)
+        await boardPage.moveCart('Doing')
     })
     test('Delete cart', async ({ page, request }) => {
         const pageObjectsManager = new PageObjectsManager(page)
@@ -41,7 +52,7 @@ test.describe('UI Tests', () => {
         const workspacePage = pageObjectsManager.getWorkspacePage()
         const boardPage = pageObjectsManager.getBoardPage()
 
-        const board = await apiRequest.createBoard('First Board')
+        const board = await apiRequest.createBoard('Fourth Board')
         await apiRequest.createList('New List')
         await apiRequest.createCard('New Card')
         await workspacePage.goToBoard(board.url)
@@ -53,9 +64,14 @@ test.describe('UI Tests', () => {
         const workspacePage = pageObjectsManager.getWorkspacePage()
         const boardPage = pageObjectsManager.getBoardPage()
 
-        const board = await apiRequest.createBoard('Another Board')
+        const board = await apiRequest.createBoard('Fifth Board')
         await workspacePage.goToBoard(board.url)
         await boardPage.deleteBoard()
+    })
+    test('Delete all boards', async ({page}) => {
+        const pageObjectsManager = new PageObjectsManager(page)
+        const boardPage = pageObjectsManager.getBoardPage()
+        await boardPage.deleteAllBoards()
     })
 
 })

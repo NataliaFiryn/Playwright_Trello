@@ -42,6 +42,7 @@ class WorkspacePage {
         await this.createBoardButton.click()
     }
     async goToBoard(boardUrl) {
+        await this.page.waitForSelector(this.allBoards._selector)
         await this.page.locator('[href="' + boardUrl + '"]').click()
     }
 }
