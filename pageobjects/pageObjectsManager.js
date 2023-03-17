@@ -6,7 +6,6 @@ class PageObjectsManager {
         this.workspacePage = new WorkspacePage(this.page)
         this.boardPage = new BoardPage(this.page)
     }
-
     getWorkspacePage() {
         return this.workspacePage
     }

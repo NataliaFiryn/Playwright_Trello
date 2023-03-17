@@ -18,7 +18,6 @@ class WorkspacePage {
         this.allBoards = this.page.locator('.boards-page-board-section-list .board-tile-details')
         this.allYourBoardsList = this.page.locator('.mlpxvZU4v4cMQN.qUkRGnTnJDff85')
         this.emptyBoardsList = this.page.locator('[data-testid="boards-list-empty-state"]')
-
     }
     async login() {
         await this.page.goto('https://trello.com/login')

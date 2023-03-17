@@ -18,7 +18,6 @@ test.describe('UI Tests', () => {
         const apiRequest = new APIUtils(request)
         const workspacePage = pageObjectsManager.getWorkspacePage()
         const boardPage = pageObjectsManager.getBoardPage()
-
         const board = await apiRequest.createBoard('First Board')
         await workspacePage.goToBoard(board.url)
         await boardPage.createList('New List')
@@ -28,18 +27,16 @@ test.describe('UI Tests', () => {
         const apiRequest = new APIUtils(request)
         const workspacePage = pageObjectsManager.getWorkspacePage()
         const boardPage = pageObjectsManager.getBoardPage()
-
         const board = await apiRequest.createBoard('Second Board')
         await apiRequest.createList('New List')
         await workspacePage.goToBoard(board.url)
         await boardPage.createCart('New Cart')
     })
-    test('Move cart', async ({page, request}) => {
+    test('Move cart', async ({ page, request }) => {
         const pageObjectsManager = new PageObjectsManager(page)
         const apiRequest = new APIUtils(request)
         const workspacePage = pageObjectsManager.getWorkspacePage()
         const boardPage = pageObjectsManager.getBoardPage()
-
         const board = await apiRequest.createBoard('Third Board')
         await apiRequest.createList('New List')
         await apiRequest.createCard('New Card')
@@ -51,7 +48,6 @@ test.describe('UI Tests', () => {
         const apiRequest = new APIUtils(request)
         const workspacePage = pageObjectsManager.getWorkspacePage()
         const boardPage = pageObjectsManager.getBoardPage()
-
         const board = await apiRequest.createBoard('Fourth Board')
         await apiRequest.createList('New List')
         await apiRequest.createCard('New Card')
@@ -63,15 +59,13 @@ test.describe('UI Tests', () => {
         const apiRequest = new APIUtils(request)
         const workspacePage = pageObjectsManager.getWorkspacePage()
         const boardPage = pageObjectsManager.getBoardPage()
-
         const board = await apiRequest.createBoard('Fifth Board')
         await workspacePage.goToBoard(board.url)
         await boardPage.deleteBoard()
     })
-    test('Delete all boards', async ({page}) => {
+    test('Delete all boards', async ({ page }) => {
         const pageObjectsManager = new PageObjectsManager(page)
         const boardPage = pageObjectsManager.getBoardPage()
         await boardPage.deleteAllBoards()
     })
-
 })

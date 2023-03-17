@@ -39,12 +39,12 @@ class BoardPage {
         await this.addCartButton.click()
         expect(await this.cart).toHaveJSProperty('outerText', cartName)
     }
-    async moveCart(moveToListName){
+    async moveCart(moveToListName) {
         await this.cart.click()
         await this.moveCartButton.click()
         await this.moveToListField.selectOption(moveToListName)
         await this.moveButton.click()
-        expect (await this.cartPosition).toHaveText(moveToListName)
+        expect(await this.cartPosition).toHaveText(moveToListName)
     }
     async deleteCart() {
         expect(await this.cart).toHaveCount(1)
@@ -65,13 +65,13 @@ class BoardPage {
         await this.deleteBoardConfirmButton.click()
         expect(await this.page.locator('[href="' + this.boardUrl + '"]')).toHaveCount(0)
     }
-    async deleteAllBoards(){
+    async deleteAllBoards() {
         await this.page.waitForSelector(this.allBoards._selector)
         const numberOfBoards = await this.allBoards.count()
-        for( let i =0; i<numberOfBoards; i++){
+        for (let i = 0; i < numberOfBoards; i++) {
             await this.allBoards.nth(0).click()
             await this.deleteBoard()
-            expect (await this.allBoards).toHaveCount(0)
+            expect(await this.allBoards).toHaveCount(0)
         }
     }
 }
