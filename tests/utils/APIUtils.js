@@ -1,8 +1,8 @@
 const { expect, request } = require('@playwright/test')
 require('dotenv').config()
 class APIUtils {
-    constructor(apiContext) {
-        this.apiContext = apiContext
+    constructor(request) {
+        this.request = request
         this.KEY = process.env.KEY
         this.TOKEN = process.env.TOKEN
         this.allBoards = {}
@@ -12,7 +12,7 @@ class APIUtils {
         this.cardId
     }
     async getAllBoardsIds() {
-        const allBoardsResponse = await this.apiContext.get('https://api.trello.com/1/members/me/boards', {
+        const allBoardsResponse = await this.request.get('/1/members/me/boards', {
             params: {
                 key: this.KEY,
                 token: this.TOKEN,
@@ -24,7 +24,7 @@ class APIUtils {
         return result
     }
     async createBoard(boardName) {
-        const createBoardResponse = await this.apiContext.post('https://api.trello.com/1/boards/', {
+        const createBoardResponse = await this.request.post('/1/boards/', {
             params: {
                 name: boardName,
                 key: this.KEY,
@@ -36,11 +36,12 @@ class APIUtils {
         expect(await createBoardResponseJson.closed).toEqual(false)
         expect(await createBoardResponseJson.prefs.permissionLevel).toEqual('private')
         this.board.id = createBoardResponseJson.id
-        this.board.url = createBoardResponseJson.url
+        const boardLink = createBoardResponseJson.url
+        this.board.url = (boardLink).split('com')[1]
         return this.board
     }
     async createList(listName) {
-        const createListResponse = await this.apiContext.post('https://api.trello.com/1/lists', {
+        const createListResponse = await this.request.post('/1/lists', {
             params: {
                 name: listName,
                 idBoard: this.board.id,
@@ -57,7 +58,7 @@ class APIUtils {
         return this.listId
     }
     async getExistingListId(listNumber) {
-        const getExistingListResponse = await this.apiContext.get('https://api.trello.com/1/boards/' + this.board.id + '/lists', {
+        const getExistingListResponse = await this.request.get(`/1/boards/${this.board.id}/lists`, {
             params: {
                 key: this.KEY,
                 token: this.TOKEN,
@@ -69,7 +70,7 @@ class APIUtils {
         return this.existingListId
     }
     async createCard(cardName) {
-        const createCardResponse = await this.apiContext.post('https://api.trello.com/1/cards', {
+        const createCardResponse = await this.request.post('/1/cards', {
             params: {
                 name: cardName,
                 idList: this.listId,
@@ -87,7 +88,7 @@ class APIUtils {
         return this.cardId
     }
     async moveCardFromCreatedListToExistingList() {
-        const moveCardResponse = await this.apiContext.put('https://api.trello.com/1/cards/' + this.cardId, {
+        const moveCardResponse = await this.request.put('/1/cards/' + this.cardId, {
             params: {
                 idList: this.existingListId,
                 key: this.KEY,
@@ -101,7 +102,7 @@ class APIUtils {
         expect(await moveCardResponseJson.id).toEqual(this.cardId)
     }
     async deleteCard() {
-        const deleteCardResponse = await this.apiContext.delete('https://api.trello.com/1/cards/' + this.cardId, {
+        const deleteCardResponse = await this.request.delete(`/1/cards/${this.cardId}`, {
             params: {
                 key: this.KEY,
                 token: this.TOKEN,
@@ -110,7 +111,7 @@ class APIUtils {
         expect(await deleteCardResponse.status()).toBe(200)
     }
     async deleteBoard() {
-        const deleteBoardResponse = await this.apiContext.delete('https://api.trello.com/1/boards/' + this.board.id, {
+        const deleteBoardResponse = await this.request.delete(`/1/boards/${this.board.id}`, {
             params: {
                 key: this.KEY,
                 token: this.TOKEN,
@@ -121,7 +122,7 @@ class APIUtils {
     async deleteAllBoards() {
         const allBoardsIds = await this.getAllBoardsIds()
         for (let i = 0; i < allBoardsIds.length; i++) {
-            const deleteBoardResponse = await this.apiContext.delete('https://api.trello.com/1/boards/' + allBoardsIds[i], {
+            const deleteBoardResponse = await this.request.delete(`/1/boards/${allBoardsIds[i]}`, {
                 params: {
                     key: this.KEY,
                     token: this.TOKEN,
