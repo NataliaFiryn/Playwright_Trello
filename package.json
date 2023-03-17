@@ -17,5 +17,8 @@
   "homepage": "https://github.com/NataliaFiryn/Playwright_Trello#readme",
   "devDependencies": {
     "@playwright/test": "^1.31.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3"
   }
 }
